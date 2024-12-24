@@ -7,7 +7,7 @@ using CsvHelper.Configuration;
 // Download systemsPopulated.json from https://www.edsm.net/en/nightly-dumps, specifically https://www.edsm.net/dump/systemsPopulated.json.gz .
 // This files are large (12+ GB at time of writing for the systemsWithCoordinates.json) and changes as new systems are added. Therefore, downloading it is the best way to keep up-to-date.
 
-// Sample (included for a format reference):
+// Sample of systemsWithCoordinates.json (included for a format reference and for Kunti's location):
 // [ {"id":18517,"id64":9468121064873,"name":"Kunti","coords":{"x":88.65625,"y":-59.625,"z":-4.0625},"date":"2017-02-24 09:42:54"} ]
 
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
@@ -53,6 +53,8 @@ csvWriter.WriteRecords(output);
 class EDASpace
 {
     readonly private IList<StarSystemInfo> _edaStarSystems;
+
+    // Possible generalization: Accept these as arguments in a constructor
     private const string _minorFactionName = "EDA Kunti League";
     private const int _margin = 10;
 
