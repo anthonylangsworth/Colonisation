@@ -13,6 +13,7 @@ using CsvHelper.Configuration;
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
 using JsonTextReader populatedSystemsJsonReader = new JsonTextReader(populatedSystemsReader);
 List<StarSystemInfo> populatedSystems = [];
+
 while (populatedSystemsJsonReader.Read())
 {
     if (populatedSystemsJsonReader.TokenType == JsonToken.StartObject)
@@ -30,7 +31,7 @@ EDASpace edaSpace = new(populatedSystems);
 
 using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
 using JsonTextReader jsonReader = new(systemsReader);
-List<StarSystemInfo> output = [];
+List<Output> output = [];
 
 while (jsonReader.Read())
 {
@@ -39,15 +40,20 @@ while (jsonReader.Read())
         StarSystemInfo? currentSystem = new JsonSerializer().Deserialize<StarSystemInfo>(jsonReader);
         if (currentSystem != null 
             && !populatedSpace.isPopulated(currentSystem) 
-            && edaSpace.TryNear(currentSystem, out (StarSystemInfo nearestEdaSystem, double distance) nearestEdaSystem)
+            && edaSpace.TryNear(currentSystem, out (StarSystemInfo system, double distance) nearestEdaSystem))
         {
-            output.Add(currentSystem);
+            output.Add(new Output
+            {
+                name = currentSystem.name,
+                nearestEdaSystemName = nearestEdaSystem.system.name,
+                distance = nearestEdaSystem.distance
+            });
         }
     }
 }
 
 using CsvWriter csvWriter = new CsvWriter(Console.Out, CultureInfo.InvariantCulture, true);
-csvWriter.Context.RegisterClassMap<StarSystemInfoClassMap>();
+csvWriter.Context.RegisterClassMap<OutputClassMap>();
 csvWriter.WriteRecords(output);
 
 class EDASpace
@@ -60,7 +66,7 @@ class EDASpace
 
     public EDASpace(ICollection<StarSystemInfo> populatedSystems)
     {
-        _edaStarSystems = populatedSystems.Where(ssi => ssi.controllingFaction.name == _minorFactionName).ToList();
+        _edaStarSystems = populatedSystems.Where(ssi => ssi.factions.Any(f => f.name == _minorFactionName)).ToList();
     }
 
     public bool TryNear(StarSystemInfo system, out (StarSystemInfo, double) closestEdaSystem)
@@ -110,7 +116,6 @@ record MinorFaction
     public string name = "";
 }
 
-
 record StarSystemInfo
 {
     public int id = 0;
@@ -118,17 +123,22 @@ record StarSystemInfo
     public string name = "";
     public Coords coords = new();
     public DateTime date = DateTime.Now;
-    public MinorFaction controllingFaction = new();
+    public List<MinorFaction> factions = new();
 }
 
-class StarSystemInfoClassMap : ClassMap<StarSystemInfo>
+record Output
 {
-    public StarSystemInfoClassMap()
+    public string name = "";
+    public string nearestEdaSystemName = "";
+    public double distance = 0.0;
+}
+
+class OutputClassMap : ClassMap<Output>
+{
+    public OutputClassMap()
     {
-        Map(ssi => ssi.id).Name("Id").Index(0);
-        Map(ssi => ssi.name).Name("Name").Index(2);
-        Map(ssi => ssi.coords.x).Name("X").Index(3);
-        Map(ssi => ssi.coords.y).Name("Y").Index(4);
-        Map(ssi => ssi.coords.z).Name("Z").Index(5);
+        Map(ssi => ssi.name).Name("Name").Index(0);
+        Map(ssi => ssi.nearestEdaSystemName).Name("Nearest EDA System").Index(1);
+        Map(ssi => ssi.distance).Name("Distance").Index(2);
     }
 }
