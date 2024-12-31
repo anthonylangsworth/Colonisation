@@ -249,3 +249,4 @@ appsettings.json
 
 systemsWithCoordinates.json
 systemsPopulated.json
+*.diagsession
