@@ -37,8 +37,8 @@ while (jsonReader.Read())
     if (jsonReader.TokenType == JsonToken.StartObject)
     {
         StarSystemInfo? currentSystem = new JsonSerializer().Deserialize<StarSystemInfo>(jsonReader);
-        if (currentSystem != null 
-            && !populatedSpace.Contains(currentSystem) 
+        if (currentSystem != null
+            && !populatedSpace.Contains(currentSystem)
             && edaSpace.TryNear(currentSystem, out (StarSystemInfo system, double distance) nearestEdaSystem))
         {
             output.Add(new Output
@@ -89,7 +89,7 @@ class EDASpace
     // Thought: Use something like this to speed up TryNear
     public double GreatestExtent(Coords a, Coords b)
     {
-        return new double[] { 
+        return new double[] {
             Math.Abs(a.x - b.x),
             Math.Abs(a.y - b.y),
             Math.Abs(a.z - b.z)}.Max();
