@@ -94,7 +94,6 @@ class EDASpace
             Math.Abs(a.y - b.y),
             Math.Abs(a.z - b.z)}.Max();
     }
-
 }
 
 class PopulatedSpace
