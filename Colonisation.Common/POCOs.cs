@@ -1,4 +1,6 @@
-﻿namespace Colonisation.Common;
+﻿using CsvHelper.Configuration;
+
+namespace Colonisation.Common;
 
 public record Coords
 {
@@ -28,4 +30,14 @@ public record StarSystemOutput
     public string name = "";
     public string nearestEdaSystemName = "";
     public double distance = 0.0;
+}
+
+public class StarSystemOutputClassMap : ClassMap<StarSystemOutput>
+{
+    public StarSystemOutputClassMap()
+    {
+        Map(ssi => ssi.name).Name("Name").Index(0);
+        Map(ssi => ssi.nearestEdaSystemName).Name("Nearest EDA System").Index(1);
+        Map(ssi => ssi.distance).Name("Distance").Index(2);
+    }
 }
