@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Configuration;
+using Colonisation.Common;
 
 // See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
 
@@ -35,7 +36,7 @@ MinorFactionSpace minorFactionSpace = new(
 
 using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
 using JsonTextReader jsonReader = new(systemsReader);
-List<Output> output = [];
+List<StarSystemOutput> output = [];
 
 while (jsonReader.Read())
 {
@@ -46,7 +47,7 @@ while (jsonReader.Read())
             && !populatedSpace.Contains(currentSystem)
             && minorFactionSpace.TryNear(currentSystem, out (StarSystemInfo system, double distance) nearestMinorFactionSystem))
         {
-            output.Add(new Output
+            output.Add(new StarSystemOutput
             {
                 name = currentSystem.name,
                 nearestEdaSystemName = nearestMinorFactionSystem.system.name,
@@ -58,7 +59,7 @@ while (jsonReader.Read())
 
 using StreamWriter outputFile = new(configurationRoot["outputFileName"] ?? "");
 using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
-csvWriter.Context.RegisterClassMap<OutputClassMap>();
+csvWriter.Context.RegisterClassMap<StarSystemOutputClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
 
 class MinorFactionSpace
@@ -122,42 +123,14 @@ class PopulatedSpace
     }
 }
 
-record Coords
+class StarSystemOutputClassMap : ClassMap<StarSystemOutput>
 {
-    public double x = 0;
-    public double y = 0;
-    public double z = 0;
-}
-
-record MinorFaction
-{
-    public int id = 0;
-    public string name = "";
-}
-
-record StarSystemInfo
-{
-    public int id = 0;
-    public long? id64 = 0;
-    public string name = "";
-    public Coords coords = new();
-    public DateTime date = DateTime.UtcNow;
-    public List<MinorFaction> factions = new();
-}
-
-record Output
-{
-    public string name = "";
-    public string nearestEdaSystemName = "";
-    public double distance = 0.0;
-}
-
-class OutputClassMap : ClassMap<Output>
-{
-    public OutputClassMap()
+    public StarSystemOutputClassMap()
     {
         Map(ssi => ssi.name).Name("Name").Index(0);
         Map(ssi => ssi.nearestEdaSystemName).Name("Nearest EDA System").Index(1);
         Map(ssi => ssi.distance).Name("Distance").Index(2);
     }
 }
+
+
