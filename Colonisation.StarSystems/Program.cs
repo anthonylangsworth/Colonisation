@@ -2,12 +2,14 @@
 using Newtonsoft.Json;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.Extensions.Configuration;
 
-// See README.md for details.
-// Enhancement: Accept arguments in configuration or command line.
+// See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
 
 // Sample of systemsWithCoordinates.json (included for a format reference and for Kunti's location):
 // [ {"id":18517,"id64":9468121064873,"name":"Kunti","coords":{"x":88.65625,"y":-59.625,"z":-4.0625},"date":"2017-02-24 09:42:54"} ]
+
+IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
 
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
 using JsonTextReader populatedSystemsJsonReader = new JsonTextReader(populatedSystemsReader);
@@ -26,7 +28,10 @@ while (populatedSystemsJsonReader.Read())
 }
 
 PopulatedSpace populatedSpace = new(populatedSystems);
-EDASpace edaSpace = new(populatedSystems);
+MinorFactionSpace minorFactionSpace = new(
+    configurationRoot["minorFactionName"] ?? "", 
+    Convert.ToDouble(configurationRoot["distance"]), 
+    populatedSystems);
 
 using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
 using JsonTextReader jsonReader = new(systemsReader);
@@ -39,40 +44,46 @@ while (jsonReader.Read())
         StarSystemInfo? currentSystem = new JsonSerializer().Deserialize<StarSystemInfo>(jsonReader);
         if (currentSystem != null
             && !populatedSpace.Contains(currentSystem)
-            && edaSpace.TryNear(currentSystem, out (StarSystemInfo system, double distance) nearestEdaSystem))
+            && minorFactionSpace.TryNear(currentSystem, out (StarSystemInfo system, double distance) nearestMinorFactionSystem))
         {
             output.Add(new Output
             {
                 name = currentSystem.name,
-                nearestEdaSystemName = nearestEdaSystem.system.name,
-                distance = nearestEdaSystem.distance
+                nearestEdaSystemName = nearestMinorFactionSystem.system.name,
+                distance = nearestMinorFactionSystem.distance
             });
         }
     }
 }
 
-using CsvWriter csvWriter = new CsvWriter(Console.Out, CultureInfo.InvariantCulture, true);
+using StreamWriter outputFile = new(configurationRoot["outputFileName"] ?? "");
+using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
 csvWriter.Context.RegisterClassMap<OutputClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
 
-class EDASpace
+class MinorFactionSpace
 {
     readonly private IList<StarSystemInfo> _edaStarSystems;
+    private readonly string _minorFactionName;
+    private readonly double _distance;
 
-    // Possible generalization: Accept these as arguments in a constructor
-    private const string _minorFactionName = "EDA Kunti League";
-    private const int _margin = 10;
-
-    public EDASpace(ICollection<StarSystemInfo> populatedSystems)
+    public MinorFactionSpace(string minorFactionName, double distance, ICollection<StarSystemInfo> populatedSystems)
     {
+        if (distance <= 0)
+        {
+            throw new ArgumentException("Must be positive", nameof(distance));
+        }
+
         _edaStarSystems = populatedSystems.Where(ssi => ssi.factions.Any(f => f.name == _minorFactionName)).ToList();
+        _minorFactionName = minorFactionName;
+        _distance = distance;
     }
 
     public bool TryNear(StarSystemInfo system, out (StarSystemInfo, double) closestEdaSystem)
     {
         var nearbySystems = _edaStarSystems
                             .Select(edass => (edass, Distance: Distance(system.coords, edass.coords)))
-                            .Where(d => d.Distance <= _margin)
+                            .Where(d => d.Distance <= _distance)
                             .OrderBy(d => d.Distance);
         closestEdaSystem = nearbySystems.FirstOrDefault();
         return nearbySystems.Any();
