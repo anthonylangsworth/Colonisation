@@ -32,7 +32,7 @@ logger.LogInformation("Parsed systemsPopulated.json");
 
 PopulatedSpace populatedSpace = new(populatedSystems);
 MinorFactionSpace minorFactionSpace = new(
-    configuration["minorFactionName"] ?? "", 
+    configuration["minorFactionName"] ?? "",
     populatedSystems);
 double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
 logger.LogInformation("Constructed minor faction space and populated space");
