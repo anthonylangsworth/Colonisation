@@ -15,7 +15,7 @@ using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.Add
 ILogger logger = loggerFactory.CreateLogger("Default");
 
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
-using JsonTextReader populatedSystemsJsonReader = new JsonTextReader(populatedSystemsReader);
+using JsonTextReader populatedSystemsJsonReader = new(populatedSystemsReader);
 List<StarSystemInfo> populatedSystems = [];
 while (populatedSystemsJsonReader.Read())
 {
