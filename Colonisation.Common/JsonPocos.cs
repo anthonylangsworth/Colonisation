@@ -22,7 +22,7 @@ public record StarSystemInfo
     public string name = "";
     public Coords coords = new();
     public DateTime date = DateTime.UtcNow;
-    public List<MinorFaction> factions = new();
+    public List<MinorFaction> factions = [];
 }
 
 public record RingInfo
@@ -41,7 +41,7 @@ public record BodyInfo
     public double? gravity = 0;
     public string? atmosphereType = "";
     public string? terraformingState = "";
-    public RingInfo[]? rings = null;
+    public ICollection<RingInfo>? rings = [];
 }
 
 public record SystemBodiesInfo
