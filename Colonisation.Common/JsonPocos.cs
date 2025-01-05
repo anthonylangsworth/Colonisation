@@ -25,19 +25,28 @@ public record StarSystemInfo
     public List<MinorFaction> factions = new();
 }
 
-public record StarSystemOutput
+public record RingInfo
 {
     public string name = "";
-    public string nearestMinorFactionSystemName = "";
-    public double distance = 0.0;
+    public string type = "";
 }
 
-public class StarSystemOutputClassMap : ClassMap<StarSystemOutput>
+public record BodyInfo
 {
-    public StarSystemOutputClassMap()
-    {
-        Map(ssi => ssi.name).Name("Name").Index(0);
-        Map(ssi => ssi.nearestMinorFactionSystemName).Name("Nearest EDA System").Index(1);
-        Map(ssi => ssi.distance).Name("Distance").Index(2);
-    }
+    public int id = 0;
+    public string name = "";
+    public string type = "";
+    public string subType = "";
+    public bool? isLandadable = null;
+    public double? gravity = 0;
+    public string? atmosphereType = "";
+    public string? terraformingState = "";
+    public RingInfo[]? rings = null;
+}
+
+public record SystemBodiesInfo
+{
+    public int id = 0;
+    public string name = "";
+    public BodyInfo[] bodies = [];
 }
