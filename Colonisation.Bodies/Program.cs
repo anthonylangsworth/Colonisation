@@ -59,6 +59,6 @@ foreach(StarSystemOutput starSystem in csvReader.EnumerateRecords(new StarSystem
     }
 }
 
-using StreamWriter streanWriter = new(configuration["bodiesDataFileName"] ?? "");
-using JsonWriter jsonWriter = new JsonTextWriter(streanWriter);
+using StreamWriter streamWriter = new(configuration["bodiesDataFileName"] ?? "");
+using JsonWriter jsonWriter = new JsonTextWriter(streamWriter);
 jsonSerializer.Serialize(jsonWriter, output);
