@@ -16,6 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colonisation.Common", "Colonisation.Common\Colonisation.Common.csproj", "{8C989C4A-29F0-48EC-81C6-A922C5BB4177}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Colonisation.Points", "Colonisation.Points\Colonisation.Points.csproj", "{130664B4-0373-4185-AD54-85C1B62CA6D9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8C989C4A-29F0-48EC-81C6-A922C5BB4177} = {8C989C4A-29F0-48EC-81C6-A922C5BB4177}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +39,10 @@ Global
 		{8C989C4A-29F0-48EC-81C6-A922C5BB4177}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C989C4A-29F0-48EC-81C6-A922C5BB4177}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C989C4A-29F0-48EC-81C6-A922C5BB4177}.Release|Any CPU.Build.0 = Release|Any CPU
+		{130664B4-0373-4185-AD54-85C1B62CA6D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{130664B4-0373-4185-AD54-85C1B62CA6D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{130664B4-0373-4185-AD54-85C1B62CA6D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{130664B4-0373-4185-AD54-85C1B62CA6D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
