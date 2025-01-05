@@ -35,7 +35,4 @@ if(systemBodies == null)
 logger.LogInformation("Loaded system body information");
 
 
-interface IColonisationRule
-{
-    int GetPoints(ColonisationTarget starSystem);
-}
+delegate Tuple<int, string> Rule(ColonisationTarget starSystem);
