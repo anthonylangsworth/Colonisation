@@ -12,14 +12,14 @@ This consists of three command line programs:
 1. Download and extract `systemsWithCoordinates.json` from https://www.edsm.net/dump/systemsWithCoordinates.json.gz into `Colonisation.StarSystems`. Note that this is a large file (12+ GB) at the time of writing.
 1. Download and extract `systemsPopulated.json` from https://www.edsm.net/en/nightly-dumps into `Colonisation.StarSystems`.
 1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**.
-1. Compile and run `Colonisation.StarSystems`. It may take a few minutes to run. Output is written to `colonisationTargets.csv` by default.
-1. Copy `colonisationTargets.csv` into `Colonisation.Bodies` and `Colonisation.Points`.
-1. Compile and run `Colonisation.Bodies` to download relevant information about the bodies in these systems.
+1. Compile and run `Colonisation.StarSystems`. It takes about four to four and a half minutes to run. Output is written to `colonisationTargets.csv` by default.
+1. Copy `colonisationTargets.csv` into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this into any spreadsheet.
+1. Compile and run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, particularly if `edsm.com` is busy.
 1. Copy `systemBodies.json` into `Colonisation.Points`.
 1. (Future) Compile and run `Colonisation.Points` to output
 
 **References**
 
-1. EDSM System APIs: https://www.edsm.net/en/api-system-v1
+1. EDSM System APIs: https://www.edsm.net/en/api-system-v1 (called by `Colonisation.StarSystems`)
 1. ED Astro dumps: https://edastro.com/mapcharts/files.html (unused but potentially useful)
 1. Inara API: https://inara.cz/elite/inara-api-devguide/ (unused but potentially useful)
