@@ -5,6 +5,7 @@ using Colonisation.Common;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.IO;
+using System.Numerics;
 
 // See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
 
@@ -17,8 +18,9 @@ ILogger logger = loggerFactory.CreateLogger("Default");
 
 using StreamReader inputFile = new(configuration["colonisationTargetsFileName"] ?? "");
 using CsvReader csvReader = new(inputFile, CultureInfo.InvariantCulture);
-csvReader.Context.RegisterClassMap<StarSystemOutputClassMap>();
-List<StarSystemOutput> colonisationTargets = csvReader.GetRecords(new StarSystemOutput()).ToList();
+csvReader.Context.RegisterClassMap<ColonisationTargetClassMap>();
+List<ColonisationTarget> colonisationTargets = csvReader.GetRecords<ColonisationTarget>().ToList();
+logger.LogInformation("Loaded colonization targets");
 
 JsonSerializer jsonSerializer = new();
 using TextReader textReader = new StreamReader(configuration["bodiesDataFileName"] ?? "");
@@ -29,4 +31,11 @@ Dictionary<string, SystemBodiesInfo>? systemBodies =
 if(systemBodies == null)
 {
     throw new ArgumentException("Invalid system bodies file");
+}
+logger.LogInformation("Loaded system body information");
+
+
+interface IColonisationRule
+{
+    int GetPoints(ColonisationTarget starSystem);
 }

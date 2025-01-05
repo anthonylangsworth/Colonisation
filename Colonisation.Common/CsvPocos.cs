@@ -2,16 +2,16 @@
 
 namespace Colonisation.Common;
 
-public record StarSystemOutput
+public record ColonisationTarget
 {
     public string name = "";
     public string nearestMinorFactionSystemName = "";
     public double distance = 0.0;
 }
 
-public class StarSystemOutputClassMap : ClassMap<StarSystemOutput>
+public class ColonisationTargetClassMap : ClassMap<ColonisationTarget>
 {
-    public StarSystemOutputClassMap()
+    public ColonisationTargetClassMap()
     {
         Map(ssi => ssi.name).Name("Name").Index(0);
         Map(ssi => ssi.nearestMinorFactionSystemName).Name("Nearest EDA System").Index(1);

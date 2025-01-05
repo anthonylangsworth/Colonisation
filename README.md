@@ -16,7 +16,7 @@ This consists of three command line programs:
 1. Copy `colonisationTargets.csv` into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this into any spreadsheet.
 1. Compile and run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, particularly if `edsm.com` is busy.
 1. Copy `systemBodies.json` into `Colonisation.Points`.
-1. (Future) Compile and run `Colonisation.Points` to output
+1. (Future) Compile and run `Colonisation.Points` to output (TODO)
 
 **References**
 

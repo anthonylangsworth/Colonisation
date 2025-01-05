@@ -17,9 +17,9 @@ JsonSerializer jsonSerializer = new();
 
 using StreamReader inputFile = new(configuration["colonisationTargetsFileName"] ?? "");
 using CsvReader csvReader = new(inputFile, CultureInfo.InvariantCulture);
-csvReader.Context.RegisterClassMap<StarSystemOutputClassMap>();
+csvReader.Context.RegisterClassMap<ColonisationTargetClassMap>();
 List<SystemBodiesInfo> output = [];
-foreach(StarSystemOutput starSystem in csvReader.EnumerateRecords(new StarSystemOutput()))
+foreach(ColonisationTarget starSystem in csvReader.EnumerateRecords(new ColonisationTarget()))
 {
     bool retry = true;
     while (retry)

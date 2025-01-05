@@ -37,14 +37,14 @@ MinorFactionSpace minorFactionSpace = new(
 double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
 logger.LogInformation("Constructed minor faction space and populated space");
 
-HashSet<StarSystemOutput> output =
+HashSet<ColonisationTarget> output =
     GetAllStarSystems("systemsWithCoordinates.json")
         .AsParallel()
         .Where(currentSystem => !populatedSpace.Contains(currentSystem))
         .Select(currentSystem =>
             {
                 var (closestMinorFactionSystem, distance) = minorFactionSpace.Closest(currentSystem);
-                return new StarSystemOutput
+                return new ColonisationTarget
                 {
                     name = currentSystem.name,
                     nearestMinorFactionSystemName = closestMinorFactionSystem.name,
@@ -57,7 +57,7 @@ logger.LogInformation("Found colonisable systems");
 
 using StreamWriter outputFile = new(configuration["outputFileName"] ?? "");
 using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
-csvWriter.Context.RegisterClassMap<StarSystemOutputClassMap>();
+csvWriter.Context.RegisterClassMap<ColonisationTargetClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
 
 IEnumerable<StarSystemInfo> GetAllStarSystems(string file)
