@@ -37,34 +37,44 @@ MinorFactionSpace minorFactionSpace = new(
 double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
 logger.LogInformation("Constructed minor faction space and populated space");
 
-using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
-using JsonTextReader jsonReader = new(systemsReader);
-JsonSerializer jsonSerializer = new();
-List<StarSystemOutput> output = [];
-while (jsonReader.Read())
-{
-    if (jsonReader.TokenType == JsonToken.StartObject)
-    {
-        StarSystemInfo? currentSystem = jsonSerializer.Deserialize<StarSystemInfo>(jsonReader);
-        if (currentSystem != null
-            && !populatedSpace.Contains(currentSystem))
-        { 
-            (StarSystemInfo minorFactionSystem, double distance) = minorFactionSpace.Closest(currentSystem);
-            if (distance <= colonisationRange)
+HashSet<StarSystemOutput> output =
+    GetAllStarSystems("systemsWithCoordinates.json")
+    .AsParallel()
+    .Where(currentSystem => !populatedSpace.Contains(currentSystem))
+    .Select(currentSystem =>
+        {
+            var (closestMinorFactionSystem, distance) = minorFactionSpace.Closest(currentSystem);
+            return new StarSystemOutput
             {
-                output.Add(new StarSystemOutput
-                {
-                    name = currentSystem.name,
-                    nearestMinorFactionSystemName = minorFactionSystem.name,
-                    distance = distance
-                });
-            }
-        }
-    }
-}
+                name = currentSystem.name,
+                nearestMinorFactionSystemName = closestMinorFactionSystem.name,
+                distance = distance
+            };
+        })
+    .Where(sso => sso.distance <= colonisationRange)
+    .ToHashSet();
 logger.LogInformation("Found colonisable systems");
 
 using StreamWriter outputFile = new(configuration["outputFileName"] ?? "");
 using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
 csvWriter.Context.RegisterClassMap<StarSystemOutputClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
+
+IEnumerable<StarSystemInfo> GetAllStarSystems(string file)
+{
+    using TextReader systemsReader = new StreamReader(file);
+    using JsonTextReader jsonReader = new(systemsReader);
+    JsonSerializer jsonSerializer = new();
+
+    while (jsonReader.Read())
+    {
+        if (jsonReader.TokenType == JsonToken.StartObject)
+        {
+            StarSystemInfo? currentSystem = jsonSerializer.Deserialize<StarSystemInfo>(jsonReader);
+            if (currentSystem != null)
+            {
+                yield return currentSystem;
+            }
+        }
+    }
+}
