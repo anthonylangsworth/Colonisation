@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using CsvHelper;
 using Microsoft.Extensions.Configuration;
 using Colonisation.Common;
+using System.Collections.Concurrent;
 
 // See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
 
@@ -30,6 +31,7 @@ PopulatedSpace populatedSpace = new(populatedSystems);
 MinorFactionSpace minorFactionSpace = new(
     configuration["minorFactionName"] ?? "", 
     populatedSystems);
+double range = Convert.ToDouble(configuration["range"]);
 
 using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
 using JsonTextReader jsonReader = new(systemsReader);
@@ -43,9 +45,8 @@ while (jsonReader.Read())
             && !populatedSpace.Contains(currentSystem))
         { 
             (StarSystemInfo system, double distance) = minorFactionSpace.Closest(currentSystem);
-            if (distance <= Convert.ToDouble(configuration["distance"]))
+            if (distance <= range)
             {
-
                 output.Add(new StarSystemOutput
                 {
                     name = currentSystem.name,
