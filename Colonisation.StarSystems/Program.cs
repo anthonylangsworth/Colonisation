@@ -39,20 +39,20 @@ logger.LogInformation("Constructed minor faction space and populated space");
 
 HashSet<StarSystemOutput> output =
     GetAllStarSystems("systemsWithCoordinates.json")
-    .AsParallel()
-    .Where(currentSystem => !populatedSpace.Contains(currentSystem))
-    .Select(currentSystem =>
-        {
-            var (closestMinorFactionSystem, distance) = minorFactionSpace.Closest(currentSystem);
-            return new StarSystemOutput
+        .AsParallel()
+        .Where(currentSystem => !populatedSpace.Contains(currentSystem))
+        .Select(currentSystem =>
             {
-                name = currentSystem.name,
-                nearestMinorFactionSystemName = closestMinorFactionSystem.name,
-                distance = distance
-            };
-        })
-    .Where(sso => sso.distance <= colonisationRange)
-    .ToHashSet();
+                var (closestMinorFactionSystem, distance) = minorFactionSpace.Closest(currentSystem);
+                return new StarSystemOutput
+                {
+                    name = currentSystem.name,
+                    nearestMinorFactionSystemName = closestMinorFactionSystem.name,
+                    distance = distance
+                };
+            })
+        .Where(sso => sso.distance <= colonisationRange)
+        .ToHashSet();
 logger.LogInformation("Found colonisable systems");
 
 using StreamWriter outputFile = new(configuration["outputFileName"] ?? "");
