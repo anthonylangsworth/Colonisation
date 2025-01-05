@@ -3,14 +3,16 @@ using Newtonsoft.Json;
 using CsvHelper;
 using Microsoft.Extensions.Configuration;
 using Colonisation.Common;
-using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 
 // See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
 
-// Sample of systemsWithCoordinates.json (included for a format reference and for Kunti's location):
+// Sample of systemsWithCoordinates.json for reference:
 // [ {"id":18517,"id64":9468121064873,"name":"Kunti","coords":{"x":88.65625,"y":-59.625,"z":-4.0625},"date":"2017-02-24 09:42:54"} ]
 
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+ILogger logger = loggerFactory.CreateLogger("Default");
 
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
 using JsonTextReader populatedSystemsJsonReader = new JsonTextReader(populatedSystemsReader);
@@ -26,12 +28,14 @@ while (populatedSystemsJsonReader.Read())
         }
     }
 }
+logger.LogInformation("Parsed systemsPopulated.json");
 
 PopulatedSpace populatedSpace = new(populatedSystems);
 MinorFactionSpace minorFactionSpace = new(
     configuration["minorFactionName"] ?? "", 
     populatedSystems);
-double range = Convert.ToDouble(configuration["range"]);
+double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
+logger.LogInformation("Constructed minor faction space and populated space");
 
 using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
 using JsonTextReader jsonReader = new(systemsReader);
@@ -46,7 +50,7 @@ while (jsonReader.Read())
             && !populatedSpace.Contains(currentSystem))
         { 
             (StarSystemInfo minorFactionSystem, double distance) = minorFactionSpace.Closest(currentSystem);
-            if (distance <= range)
+            if (distance <= colonisationRange)
             {
                 output.Add(new StarSystemOutput
                 {
@@ -58,6 +62,7 @@ while (jsonReader.Read())
         }
     }
 }
+logger.LogInformation("Found colonisable systems");
 
 using StreamWriter outputFile = new(configuration["outputFileName"] ?? "");
 using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
