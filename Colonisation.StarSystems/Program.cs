@@ -10,7 +10,7 @@ using System.Collections.Concurrent;
 // Sample of systemsWithCoordinates.json (included for a format reference and for Kunti's location):
 // [ {"id":18517,"id64":9468121064873,"name":"Kunti","coords":{"x":88.65625,"y":-59.625,"z":-4.0625},"date":"2017-02-24 09:42:54"} ]
 
-IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
+IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
 
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
 using JsonTextReader populatedSystemsJsonReader = new JsonTextReader(populatedSystemsReader);
@@ -35,22 +35,23 @@ double range = Convert.ToDouble(configuration["range"]);
 
 using TextReader systemsReader = new StreamReader("systemsWithCoordinates.json");
 using JsonTextReader jsonReader = new(systemsReader);
+JsonSerializer jsonSerializer = new();
 List<StarSystemOutput> output = [];
 while (jsonReader.Read())
 {
     if (jsonReader.TokenType == JsonToken.StartObject)
     {
-        StarSystemInfo? currentSystem = new JsonSerializer().Deserialize<StarSystemInfo>(jsonReader);
+        StarSystemInfo? currentSystem = jsonSerializer.Deserialize<StarSystemInfo>(jsonReader);
         if (currentSystem != null
             && !populatedSpace.Contains(currentSystem))
         { 
-            (StarSystemInfo system, double distance) = minorFactionSpace.Closest(currentSystem);
+            (StarSystemInfo minorFactionSystem, double distance) = minorFactionSpace.Closest(currentSystem);
             if (distance <= range)
             {
                 output.Add(new StarSystemOutput
                 {
                     name = currentSystem.name,
-                    nearestMinorFactionSystemName = system.name,
+                    nearestMinorFactionSystemName = minorFactionSystem.name,
                     distance = distance
                 });
             }

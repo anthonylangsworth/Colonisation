@@ -8,7 +8,9 @@ class MinorFactionSpace
     public MinorFactionSpace(string minorFactionName, ICollection<StarSystemInfo> populatedSystems)
     {
         _minorFactionName = minorFactionName.Trim();
-        _starSystems = populatedSystems.Where(ssi => ssi.factions.Any(f => string.Compare(f.name, _minorFactionName, true) == 0)).ToHashSet();
+        _starSystems = populatedSystems
+                        .Where(ssi => ssi.factions.Any(f => string.Compare(f.name, _minorFactionName, true) == 0))
+                        .ToHashSet();
         if(!_starSystems.Any())
         {
             throw new ArgumentException("Not present in any star system", nameof(minorFactionName));
