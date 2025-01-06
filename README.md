@@ -14,12 +14,13 @@ The separation ensures long running but infrequently changing details do not imp
 The programs and files involved are:
 
 ```mermaid
-flowchart LR
+flowchart TB
   swc@{ shape: doc, label: "systemsWithCoordinates.json"} --> cs["Colonisation.Systems"]
   sp@{ shape: doc, label: "systemsPopulated.json"} --> cs
   cs --> ct@{ shape: doc, label: "colonisationTargets.csv"}
   edsm@{ shape: cyl, label: "EDSM"} --> cb["Colonisation.Bodies"]
   cb --> sb@{ shape: doc, label: "systemBodies.json"}
+  ct --> cb["Colonisation.Points"]
   ct --> cp["Colonisation.Points"]
   sb --> cp
   cp --> pct@{ shape: doc, label: "prioritisedColonisationTargets.csv"}
