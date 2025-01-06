@@ -13,7 +13,7 @@ using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.Add
 ILogger logger = loggerFactory.CreateLogger("Default");
 
 using HttpClient httpClient = new();
-JsonSerializer jsonSerializer = new();
+JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(new JsonSerializerSettings { Formatting = Formatting.Indented });
 
 using StreamReader inputFile = new(configuration["colonisationTargetsFileName"] ?? "");
 using CsvReader csvReader = new(inputFile, CultureInfo.InvariantCulture);
