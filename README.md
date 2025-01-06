@@ -15,7 +15,7 @@ The separation ensures long running but infrequently changing details do not imp
 1. Download and extract `systemsPopulated.json` from https://www.edsm.net/en/nightly-dumps into `Colonisation.StarSystems`. This file is also excluded from the git repository.
 1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**.
 1. Compile and run `Colonisation.StarSystems`. It takes about four to four and a half minutes to run. Output is written to `colonisationTargets.csv` by default.
-1. Copy `colonisationTargets.csv` into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this into any spreadsheet.
+1. Copy `colonisationTargets.csv` into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this file into any spreadsheet.
 1. Compile and run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, particularly if `edsm.com` is busy.
 1. Copy `systemBodies.json` into `Colonisation.Points`.
 1. (Future) Compile and run `Colonisation.Points` to output (TODO)
