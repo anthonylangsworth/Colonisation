@@ -37,16 +37,18 @@ public record BodyInfo
     public string name = "";
     public string type = "";
     public string subType = "";
-    public bool? isLandadable = null;
-    public double? gravity = 0;
-    public string? atmosphereType = "";
-    public string? terraformingState = "";
-    public ICollection<RingInfo>? rings = [];
+    public double distanceToArrival = 0;
+    public bool isLandable = false;
+    public double gravity = 0;
+    public string volcanismType = "";
+    public string atmosphereType = "";
+    public string terraformingState = "";
+    public ICollection<RingInfo> rings = [];
 }
 
 public record SystemBodiesInfo
 {
     public int id = 0;
     public string name = "";
-    public BodyInfo[] bodies = [];
+    public ICollection<BodyInfo> bodies = [];
 }
