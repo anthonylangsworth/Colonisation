@@ -17,11 +17,12 @@ ILogger logger = loggerFactory.CreateLogger("Default");
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
 using JsonTextReader populatedSystemsJsonReader = new(populatedSystemsReader);
 List<StarSystemInfo> populatedSystems = [];
+JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(new JsonSerializerSettings { Formatting = Formatting.Indented });
 while (populatedSystemsJsonReader.Read())
 {
     if (populatedSystemsJsonReader.TokenType == JsonToken.StartObject)
     {
-        StarSystemInfo? starSystemInfo = new JsonSerializer().Deserialize<StarSystemInfo>(populatedSystemsJsonReader);
+        StarSystemInfo? starSystemInfo = jsonSerializer.Deserialize<StarSystemInfo>(populatedSystemsJsonReader);
         if (starSystemInfo != null)
         {
             populatedSystems.Add(starSystemInfo);
