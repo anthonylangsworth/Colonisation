@@ -1,16 +1,12 @@
 ﻿using Newtonsoft.Json;
-using CsvHelper;
 using Microsoft.Extensions.Configuration;
 using Colonisation.Common;
 using Microsoft.Extensions.Logging;
+using Colonisation.Points;
+using CsvHelper;
 using System.Globalization;
-using System.IO;
-using System.Numerics;
 
 // See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
-
-// Sample of systemsWithCoordinates.json for reference:
-// [ {"id":18517,"id64":9468121064873,"name":"Kunti","coords":{"x":88.65625,"y":-59.625,"z":-4.0625},"date":"2017-02-24 09:42:54"} ]
 
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
 using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
@@ -34,5 +30,37 @@ if(systemBodies == null)
 }
 logger.LogInformation("Loaded system body information");
 
+List<PrioritisedColonisationTarget> prioritisedColonisationTargets = [];
+List<Rule> rules =
+[
+    new LandableWorlds(),
+    new MultipleStars(),
+    new Rings(),
+    new TerraformableWorlds()
+];
+foreach(ColonisationTarget colonisationTarget in colonisationTargets)
+{
+    SystemBodiesInfo colonizationTargetBodies = systemBodies[colonisationTarget.name];
 
-delegate Tuple<int, string> Rule(ColonisationTarget starSystem);
+    IOrderedEnumerable<(int points, string description)> evaluatedRules = 
+        rules
+            .Select(r => r.Evaluate(colonisationTarget, colonizationTargetBodies))
+            .Where(r => r.points > 0)
+            .OrderByDescending(r => r.points);
+
+    prioritisedColonisationTargets.Add(new PrioritisedColonisationTarget()
+    {
+        name = colonisationTarget.name,
+        points = evaluatedRules.Sum(r => r.points),
+        description = string.Join("; ", evaluatedRules.Select(r => r.description)),
+        nearestMinorFactionSystemName = colonisationTarget.nearestMinorFactionSystemName,
+        distance = colonisationTarget.distance
+    });
+}
+logger.LogInformation("Run rules");
+
+using StreamWriter outputFile = new(configuration["prioritisedColonisationTargetsFileName"] ?? "");
+using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
+csvWriter.Context.RegisterClassMap<PrioritisedColonisationTargetClassMap>();
+csvWriter.WriteRecords(prioritisedColonisationTargets.OrderBy(o => o.name).OrderByDescending(o => o.points));
+
