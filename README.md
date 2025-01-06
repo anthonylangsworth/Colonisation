@@ -1,4 +1,4 @@
-**Overview**
+# Overview
 
 Produce a list of potential systems for the upcoming colonization feature for the minor faction *EDA Kunti League* in the game **Elite Dangerous**.
 
@@ -9,7 +9,7 @@ This consists of three command line programs (to be run in order):
 
 The separation ensures long running but infrequently changing details do not impact the likely frequent fiddling and tweaking of point values.
 
-**Use**
+# Use
 
 The programs and files involved are:
 
@@ -35,7 +35,7 @@ flowchart TB
 1. Copy `systemBodies.json` into `Colonisation.Points`.
 1. Compile and run `Colonisation.Points` to output `prioritisedColonisationTargets.csv`.
 
-**References**
+# References
 
 1. EDSM System APIs: https://www.edsm.net/en/api-system-v1 (called by `Colonisation.StarSystems`)
 1. ED Astro dumps: https://edastro.com/mapcharts/files.html (unused but potentially useful)
