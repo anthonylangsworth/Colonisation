@@ -31,11 +31,11 @@ flowchart TB
 1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**.
 1. Build the solution.
 1. Run "run.bat" in the root folder of the solution. This batch file will:
-  1. Run `Colonisation.StarSystems`. It takes about four to four and a half minutes to run. By default, output is written to `colonisationTargets.csv`.
-  1. Copy `colonisationTargets.csv` from the previous step into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this file into any spreadsheet.
-  1. Run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, mainly if https://edsm.net is busy.
-  1. Copy `systemBodies.json` from the previous step into `Colonisation.Points`.
-  1. Run `Colonisation.Points` to output `prioritisedColonisationTargets.csv`.
+    1. Run `Colonisation.StarSystems`. It takes about four to four and a half minutes to run. By default, output is written to `colonisationTargets.csv`.
+    1. Copy `colonisationTargets.csv` from the previous step into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this file into any spreadsheet.
+    1. Run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, mainly if https://edsm.net is busy.
+    1. Copy `systemBodies.json` from the previous step into `Colonisation.Points`.
+    1. Run `Colonisation.Points` to output `prioritisedColonisationTargets.csv`.
 
 # Principles
 
