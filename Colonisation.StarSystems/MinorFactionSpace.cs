@@ -1,15 +1,17 @@
 ﻿using Colonisation.Common;
+using System.Linq;
 
 class MinorFactionSpace
 {
-    private readonly ISet<StarSystemInfo> _starSystems;
+    private readonly ISet<StarSystem> _starSystems;
     private readonly string _minorFactionName;
+    private static readonly string[] colonisationContactStationTypes = ["Outpost", "Coriolis Starport", "Ocellus Starport", "Asteroid base", "Orbis Starport"];
 
-    public MinorFactionSpace(string minorFactionName, ICollection<StarSystemInfo> populatedSystems)
+    public MinorFactionSpace(string minorFactionName, ICollection<StarSystem> populatedSystems)
     {
         _minorFactionName = minorFactionName.Trim();
         _starSystems = populatedSystems
-                        .Where(ssi => ssi.factions.Any(f => string.Compare(f.name, _minorFactionName, true) == 0))
+                        .Where(ssi => ssi.stations.Any(s => IsControlledStation(s, _minorFactionName)))
                         .ToHashSet();
         if(!_starSystems.Any())
         {
@@ -17,7 +19,7 @@ class MinorFactionSpace
         }
     }
 
-    public (StarSystemInfo, double) Closest(StarSystemInfo system)
+    public (StarSystem, double) Closest(StarSystem system)
     {
         return _starSystems
                 .Select(edass => (edass, Distance: Distance(system.coords, edass.coords)))
@@ -41,4 +43,11 @@ class MinorFactionSpace
             Math.Abs(a.y - b.y),
             Math.Abs(a.z - b.z)}.Max();
     }
+
+    public static bool IsControlledStation(Station station, string minorFactionName)
+    {
+        return string.Compare(station.controllingFaction.name, minorFactionName, true) == 0
+            && colonisationContactStationTypes.Contains(station.type, StringComparer.OrdinalIgnoreCase);
+    }
 }
+

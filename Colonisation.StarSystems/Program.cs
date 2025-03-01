@@ -16,13 +16,13 @@ ILogger logger = loggerFactory.CreateLogger("Default");
 
 using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
 using JsonTextReader populatedSystemsJsonReader = new(populatedSystemsReader);
-List<StarSystemInfo> populatedSystems = [];
+List<StarSystem> populatedSystems = [];
 JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(new JsonSerializerSettings { Formatting = Formatting.Indented });
 while (populatedSystemsJsonReader.Read())
 {
     if (populatedSystemsJsonReader.TokenType == JsonToken.StartObject)
     {
-        StarSystemInfo? starSystemInfo = jsonSerializer.Deserialize<StarSystemInfo>(populatedSystemsJsonReader);
+        StarSystem? starSystemInfo = jsonSerializer.Deserialize<StarSystem>(populatedSystemsJsonReader);
         if (starSystemInfo != null)
         {
             populatedSystems.Add(starSystemInfo);
@@ -33,7 +33,7 @@ logger.LogInformation("Parsed systemsPopulated.json");
 
 PopulatedSpace populatedSpace = new(populatedSystems);
 MinorFactionSpace minorFactionSpace = new(
-    configuration["minorFactionName"] ?? "",
+    configuration["minorFactionName"] ?? throw new ArgumentException("Missing minorFactionName in configuration"),
     populatedSystems);
 double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
 logger.LogInformation("Constructed minor faction space and populated space");
@@ -61,7 +61,7 @@ using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
 csvWriter.Context.RegisterClassMap<ColonisationTargetClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
 
-IEnumerable<StarSystemInfo> GetAllStarSystems(string file)
+IEnumerable<StarSystem> GetAllStarSystems(string file)
 {
     using TextReader systemsReader = new StreamReader(file);
     using JsonTextReader jsonReader = new(systemsReader);
@@ -71,7 +71,7 @@ IEnumerable<StarSystemInfo> GetAllStarSystems(string file)
     {
         if (jsonReader.TokenType == JsonToken.StartObject)
         {
-            StarSystemInfo? currentSystem = jsonSerializer.Deserialize<StarSystemInfo>(jsonReader);
+            StarSystem? currentSystem = jsonSerializer.Deserialize<StarSystem>(jsonReader);
             if (currentSystem != null)
             {
                 yield return currentSystem;

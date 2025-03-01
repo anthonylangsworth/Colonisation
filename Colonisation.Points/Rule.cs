@@ -11,14 +11,14 @@ namespace Colonisation.Points;
 abstract class Rule
 {
     // The return type is the point count followed by a short description. 
-    public abstract (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodiesInfo bodies);
+    public abstract (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies);
 }
 
 class LandableWorlds: Rule
 {
-    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodiesInfo bodies)
+    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies)
     {
-        IEnumerable<BodyInfo> landableWorlds = bodies.bodies.Where(body => body.isLandable);
+        IEnumerable<Body> landableWorlds = bodies.bodies.Where(body => body.isLandable);
         return landableWorlds.Any()
             ? (5, $"Contains landable worlds: {string.Join(", ", landableWorlds.Select(bodyInfo => bodyInfo.name))}")
             : (0, "");
@@ -27,9 +27,9 @@ class LandableWorlds: Rule
 
 class MultipleStars : Rule
 {
-    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodiesInfo bodies)
+    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies)
     {
-        IEnumerable<BodyInfo> stars = bodies.bodies.Where(body => body.type == "Star");
+        IEnumerable<Body> stars = bodies.bodies.Where(body => body.type == "Star");
         return stars.Count() > 1
             ? (1, $"Contains multiple stars: {string.Join(", ", stars.Select(bodyInfo => bodyInfo.name))}")
             : (0, "");
@@ -38,9 +38,9 @@ class MultipleStars : Rule
 
 class Rings : Rule
 {
-    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodiesInfo bodies)
+    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies)
     {
-        IEnumerable<BodyInfo> ringedWorlds = bodies.bodies.Where(body => body.rings.Any());
+        IEnumerable<Body> ringedWorlds = bodies.bodies.Where(body => body.rings.Any());
         return ringedWorlds.Any()
             ? (5, $"Contains ringed worlds: {string.Join(", ", ringedWorlds.Select(bodyInfo => bodyInfo.name))}")
             : (0, "");
@@ -49,9 +49,9 @@ class Rings : Rule
 
 class TerraformableWorlds : Rule
 {
-    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodiesInfo bodies)
+    public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies)
     {
-        IEnumerable<BodyInfo> terraformableWorlds = bodies.bodies.Where(body => !string.IsNullOrWhiteSpace(body.terraformingState) && body.terraformingState != "Not terraformable");
+        IEnumerable<Body> terraformableWorlds = bodies.bodies.Where(body => !string.IsNullOrWhiteSpace(body.terraformingState) && body.terraformingState != "Not terraformable");
         return terraformableWorlds.Any()
             ? (10, $"Contains terraformable worlds: {string.Join(", ", terraformableWorlds.Select(bodyInfo => bodyInfo.name))}")
             : (0, "");

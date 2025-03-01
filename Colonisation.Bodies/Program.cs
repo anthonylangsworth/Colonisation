@@ -18,7 +18,7 @@ JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(new JsonSerializerS
 using StreamReader inputFile = new(configuration["colonisationTargetsFileName"] ?? "");
 using CsvReader csvReader = new(inputFile, CultureInfo.InvariantCulture);
 csvReader.Context.RegisterClassMap<ColonisationTargetClassMap>();
-List<SystemBodiesInfo> output = [];
+List<SystemBodies> output = [];
 foreach(ColonisationTarget starSystem in csvReader.EnumerateRecords(new ColonisationTarget()))
 {
     bool retry = true;
@@ -31,7 +31,7 @@ foreach(ColonisationTarget starSystem in csvReader.EnumerateRecords(new Colonisa
             using TextReader textReader = new StreamReader(stream);
             using JsonReader jsonReader = new JsonTextReader(textReader);
 
-            SystemBodiesInfo? systemBodiesInfo = jsonSerializer.Deserialize<SystemBodiesInfo>(jsonReader);
+            SystemBodies? systemBodiesInfo = jsonSerializer.Deserialize<SystemBodies>(jsonReader);
             if (systemBodiesInfo != null)
             {
                 output.Add(systemBodiesInfo);

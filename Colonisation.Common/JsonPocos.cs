@@ -11,27 +11,28 @@ public record Coords
 
 public record MinorFaction
 {
-    public int id = 0;
+    public int? id = null; // Will be null for engineer bases
     public string name = "";
 }
 
-public record StarSystemInfo
+public record StarSystem
 {
     public int id = 0;
     public long? id64 = 0;
     public string name = "";
     public Coords coords = new();
     public DateTime date = DateTime.UtcNow;
-    public List<MinorFaction> factions = [];
+    public ICollection<MinorFaction> factions = [];
+    public ICollection<Station> stations = [];
 }
 
-public record RingInfo
+public record Ring
 {
     public string name = "";
     public string type = "";
 }
 
-public record BodyInfo
+public record Body
 {
     public int id = 0;
     public string name = "";
@@ -43,12 +44,20 @@ public record BodyInfo
     public string volcanismType = "";
     public string atmosphereType = "";
     public string terraformingState = "";
-    public ICollection<RingInfo> rings = [];
+    public ICollection<Ring> rings = [];
 }
 
-public record SystemBodiesInfo
+public record Station
 {
     public int id = 0;
     public string name = "";
-    public ICollection<BodyInfo> bodies = [];
+    public string type = "";
+    public MinorFaction controllingFaction = new();
+}
+
+public record SystemBodies
+{
+    public int id = 0;
+    public string name = "";
+    public ICollection<Body> bodies = [];
 }

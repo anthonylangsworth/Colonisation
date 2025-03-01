@@ -21,8 +21,8 @@ logger.LogInformation("Loaded colonization targets");
 JsonSerializer jsonSerializer = new();
 using TextReader textReader = new StreamReader(configuration["bodiesDataFileName"] ?? "");
 using JsonReader jsonReader = new JsonTextReader(textReader);
-Dictionary<string, SystemBodiesInfo>? systemBodies =
-    jsonSerializer.Deserialize<List<SystemBodiesInfo>>(jsonReader)
+Dictionary<string, SystemBodies>? systemBodies =
+    jsonSerializer.Deserialize<List<SystemBodies>>(jsonReader)
                  ?.ToDictionary(sbi => sbi.name, sbi => sbi);
 if(systemBodies == null)
 {
@@ -40,7 +40,7 @@ List<Rule> rules =
 ];
 foreach(ColonisationTarget colonisationTarget in colonisationTargets)
 {
-    SystemBodiesInfo colonizationTargetBodies = systemBodies[colonisationTarget.name];
+    SystemBodies colonizationTargetBodies = systemBodies[colonisationTarget.name];
 
     IOrderedEnumerable<(int points, string description)> evaluatedRules = 
         rules
