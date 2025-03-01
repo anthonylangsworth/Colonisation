@@ -21,7 +21,7 @@ flowchart TB
   cs --> ct@{ shape: doc, label: "colonisationTargets.csv"}
   edsm@{ shape: cyl, label: "EDSM"} --> cb["Colonisation.Bodies"]
   cb --> sb@{ shape: doc, label: "systemBodies.json"}
-  ct --> cb["Colonisation.Points"]
+  ct --> cb
   ct --> cp["Colonisation.Points"]
   sb --> cp
   cp --> pct@{ shape: doc, label: "prioritisedColonisationTargets.csv"}
