@@ -15,7 +15,7 @@ The programs and files involved are:
 
 ```mermaid
 flowchart TB
-  swc@{ shape: doc, label: "systemsWithCoordinates.json"} --> cs["Colonisation.Systems"]
+  swc@{ shape: doc, label: "systemsWithCoordinates.json"} --> cs["Colonisation.StarSystems"]
   sp@{ shape: doc, label: "systemsPopulated.json"} --> cs
   cs --> ct@{ shape: doc, label: "colonisationTargets.csv"}
   edsm@{ shape: cyl, label: "EDSM"} --> cb["Colonisation.Bodies"]
