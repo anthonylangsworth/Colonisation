@@ -30,9 +30,19 @@ class MultipleStars : Rule
     public override (int points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies)
     {
         IEnumerable<Body> stars = bodies.bodies.Where(body => body.type == "Star");
-        return stars.Count() > 1
-            ? (1, $"Contains multiple stars: {string.Join(", ", stars.Select(bodyInfo => bodyInfo.name))}")
-            : (0, "");
+        bool isDistant = bodies.bodies.Any(body => body.type == "Star" && body.distanceToArrival > 50_000);
+        if(stars.Any() && isDistant)
+        {
+            return (1, $"Contains multiple but some distant stars: {string.Join(", ", stars.Select(bodyInfo => bodyInfo.name))}");
+        }
+        else if(stars.Any())
+        {
+            return (2, $"Contains multiple stars: {string.Join(", ", stars.Select(bodyInfo => bodyInfo.name))}");
+        }
+        else
+        {
+            return (0, "");
+        }
     }
 }
 
@@ -53,7 +63,7 @@ class TerraformableWorlds : Rule
     {
         IEnumerable<Body> terraformableWorlds = bodies.bodies.Where(body => !string.IsNullOrWhiteSpace(body.terraformingState) && body.terraformingState != "Not terraformable");
         return terraformableWorlds.Any()
-            ? (10, $"Contains terraformable worlds: {string.Join(", ", terraformableWorlds.Select(bodyInfo => bodyInfo.name))}")
+            ? (20, $"Contains terraformable worlds: {string.Join(", ", terraformableWorlds.Select(bodyInfo => bodyInfo.name))}")
             : (0, "");
     }
 }
