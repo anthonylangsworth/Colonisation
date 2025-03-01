@@ -24,6 +24,9 @@
     <None Update="appSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="stations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="systemsPopulated.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

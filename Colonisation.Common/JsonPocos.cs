@@ -52,6 +52,7 @@ public record Station
     public int id = 0;
     public string name = "";
     public string type = "";
+    public string systemName = "";
     public MinorFaction controllingFaction = new();
 }
 

@@ -249,3 +249,4 @@ ModelManifest.xml
 systemsWithCoordinates.json
 systemsPopulated.json
 *.diagsession
+/Colonisation.StarSystems/stations.json

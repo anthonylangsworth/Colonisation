@@ -17,6 +17,7 @@ The programs and files involved are:
 flowchart TB
   swc@{ shape: doc, label: "systemsWithCoordinates.json"} --> cs["Colonisation.StarSystems"]
   sp@{ shape: doc, label: "systemsPopulated.json"} --> cs
+  st@{ shape: doc, label: "stations.json"} --> cs
   cs --> ct@{ shape: doc, label: "colonisationTargets.csv"}
   edsm@{ shape: cyl, label: "EDSM"} --> cb["Colonisation.Bodies"]
   cb --> sb@{ shape: doc, label: "systemBodies.json"}
@@ -28,10 +29,11 @@ flowchart TB
 
 1. Download and extract `systemsWithCoordinates.json` from https://www.edsm.net/dump/systemsWithCoordinates.json.gz into `Colonisation.StarSystems`. Note that this is a large file (12+ GB) at the time of writing. Such a large but rarely changing file is intentionally excluded from the git repository.
 1. Download and extract `systemsPopulated.json` from https://www.edsm.net/dump/systemsPopulated.json.gz into `Colonisation.StarSystems`. This file is also excluded from the git repository.
+1. Download and extract `stations.json` from https://www.edsm.net/dump/stations.json.gz into `Colonisation.StarSystems`. This file is also excluded from the git repository. This file's contents are used to detect systems being colonised by looking for a station called "System Colonisation Ship".
 1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**.
 1. Build the solution.
 1. Run "run.bat" in the root folder of the solution. This batch file will:
-    1. Run `Colonisation.StarSystems`. It takes about four to four and a half minutes to run. By default, output is written to `colonisationTargets.csv`.
+    1. Run `Colonisation.StarSystems`. It takes several minutes to run. By default, output is written to `colonisationTargets.csv`.
     1. Copy `colonisationTargets.csv` from the previous step into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this file into any spreadsheet.
     1. Run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, mainly if https://edsm.net is busy.
     1. Copy `systemBodies.json` from the previous step into `Colonisation.Points`.
@@ -39,7 +41,7 @@ flowchart TB
 
 # Principles
 
-This is a simple tool not intended for broad use. Therefore, not every parameter is stored in configuration or validated. Code is kept in a few files to keep swapping to a minimum.
+This is a simple tool not intended for broad use. Therefore, not every parameter is stored in configuration or validated. Code is kept in a few files to keep swapping to a minimum. Error handling is minimal.
 
 # References
 
