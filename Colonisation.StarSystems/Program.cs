@@ -21,9 +21,12 @@ HashSet<StarSystem> populatedSystems = [];
 HashSet<Station> colonizingStations = [];
 Task.WaitAll(
     [
-        Task.Run(() => populatedSystems = GetPopulatedSystems(jsonSerializer, "systemsPopulated.json").ToHashSet()),
-        Task.Run(() => colonizingStations = GetColonisingStations(jsonSerializer, "stations.json").ToHashSet()),
-    ]);
+        // Get a list of populated systems to exclude from colonisation targets
+        Task.Run(() => populatedSystems = GetFromJson<StarSystem>(jsonSerializer, "systemsPopulated.json").ToHashSet()),
+        // Exclude systems with a "System Colonisation Ship" from colonisation targets 
+        Task.Run(() => colonizingStations = GetFromJson<Station>(jsonSerializer, "stations.json",
+            station => station.systemName != null && station.name == "System Colonisation Ship").ToHashSet()),
+]);
 logger.LogInformation("Parsed input files");
 
 MinorFactionSpace minorFactionSpace = new(
@@ -35,7 +38,7 @@ double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
 logger.LogInformation("Constructed minor faction space and populated space");
 
 HashSet<ColonisationTarget> output =
-    GetAllStarSystems(jsonSerializer, "systemsWithCoordinates.json")
+    GetFromJson< StarSystem>(jsonSerializer, "systemsWithCoordinates.json")
         .AsParallel()
         .Where(currentSystem => !populatedSpace.Contains(currentSystem))
         .Where(currentSystem => !colonizingSpace.Contains(currentSystem))
@@ -58,58 +61,23 @@ using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
 csvWriter.Context.RegisterClassMap<ColonisationTargetClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
 
-// Get a list of populated systems to exclude from colonisation targets
-static IEnumerable<StarSystem> GetPopulatedSystems(JsonSerializer jsonSerializer, string filename)
+static IEnumerable<T> GetFromJson<T>(JsonSerializer jsonSerializer, string filename, 
+        Predicate<T>? filter = default)
+    where T: class
 {
-    using TextReader populatedSystemsReader = new StreamReader("systemsPopulated.json");
-    using JsonTextReader populatedSystemsJsonReader = new(populatedSystemsReader);
-    List<StarSystem> populatedSystems = [];
-    while (populatedSystemsJsonReader.Read())
-    {
-        if (populatedSystemsJsonReader.TokenType == JsonToken.StartObject)
-        {
-            StarSystem? starSystem = jsonSerializer.Deserialize<StarSystem>(populatedSystemsJsonReader);
-            if (starSystem != null)
-            {
-                yield return starSystem;
-            }
-        }
-    }
-}
+    using TextReader textReader = new StreamReader(filename);
+    using JsonTextReader jsonReader = new(textReader);
 
-// Exclude systems with a "System Colonisation Ship" from colonisation targets 
-static IEnumerable<Station> GetColonisingStations(JsonSerializer jsonSerializer, string filename)
-{
-    using TextReader stationsReader = new StreamReader(filename);
-    using JsonTextReader stationsJsonReader = new(stationsReader);
-    HashSet<Station> colonisingStations = [];
-    while (stationsJsonReader.Read())
-    {
-        if (stationsJsonReader.TokenType == JsonToken.StartObject)
-        {
-            Station? station = jsonSerializer.Deserialize<Station>(stationsJsonReader);
-            if (station != null && station.systemName != null && station.name == "System Colonisation Ship")
-            {
-                yield return station;
-            }
-        }
-    }
-}
-
-// Get all star systems as possible colonisation targets
-static IEnumerable<StarSystem> GetAllStarSystems(JsonSerializer jsonSerializer, string filename)
-{
-    using TextReader systemsReader = new StreamReader(filename);
-    using JsonTextReader jsonReader = new(systemsReader);
-
+    // This pattern, while more code than Deserialise<T[]>(), minimizes memory use on
+    // multi GB input files.
     while (jsonReader.Read())
     {
         if (jsonReader.TokenType == JsonToken.StartObject)
         {
-            StarSystem? currentSystem = jsonSerializer.Deserialize<StarSystem>(jsonReader);
-            if (currentSystem != null)
+            T? current = jsonSerializer.Deserialize<T>(jsonReader);
+            if (current != null && filter != null && filter(current))
             {
-                yield return currentSystem;
+                yield return current;
             }
         }
     }
