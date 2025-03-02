@@ -1,6 +1,6 @@
 # Overview
 
-Produce a list of potential systems for the upcoming colonisation feature for the minor faction *EDA Kunti League* in the game **Elite Dangerous**.
+Produce a list of potential colonisation systems for your minor faction in the game **Elite Dangerous**.
 
 This consists of three command line programs (to be run in order):
 1. `Colonisation.StarSystems`: This produces a list of potential colonisation systems near systems controlled by the specified minor faction. The output is CSV for easy import into Excel or a similar spreadsheet.
