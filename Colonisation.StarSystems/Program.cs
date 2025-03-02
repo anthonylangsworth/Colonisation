@@ -74,7 +74,8 @@ static IEnumerable<T> GetFromJson<T>(JsonSerializer jsonSerializer, string filen
         if (jsonReader.TokenType == JsonToken.StartObject)
         {
             T? current = jsonSerializer.Deserialize<T>(jsonReader);
-            if (current != null && filter != null && filter(current))
+            if (current != null
+                && ((filter != default && filter(current)) || filter == default))
             {
                 yield return current;
             }
