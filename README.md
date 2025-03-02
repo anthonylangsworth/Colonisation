@@ -4,7 +4,7 @@ Produce a list of potential systems for the upcoming colonisation feature for th
 
 This consists of three command line programs (to be run in order):
 1. `Colonisation.StarSystems`: This produces a list of potential colonisation systems near systems controlled by the specified minor faction. The output is CSV for easy import into Excel or a similar spreadsheet.
-1. `Colonisation.Bodies`: This takes the output of `Colonisation.StarSystems` and looks up details about the bodies on EDSM. The output is in JSON, since it has a complex structure. Inara, EDSM and similar websites also provide the same information in more accessible forms.
+1. `Colonisation.Bodies`: This takes the output of `Colonisation.StarSystems` and looks up details about the bodies on EDSM. The output is in JSON, since it has a complex structure.
 1. `Colonisation.Points`: This takes the output of both previous commands and produces a list of systems based on an arbitrary point system to determine the most desirable systems for colonisation. The output is in a CSV.
 
 The separation ensures long running but infrequently changing details do not impact the likely frequent fiddling and tweaking of point values.
