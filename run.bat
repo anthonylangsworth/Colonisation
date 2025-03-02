@@ -23,7 +23,7 @@ copy /y colonisationTargets.csv ..\..\..\..\Colonisation.Points\bin\debug\net8.0
 if errorlevel 1 goto exit
 
 cd ..\..\..\..\Colonisation.Bodies\bin\debug\net8.0
-echo Running "Colonisation.Bodies" (may take several minutes depending in EDSM)...
+echo Running "Colonisation.Bodies" (may take several minutes depending on EDSM's load)...
 Colonisation.Bodies
 if errorlevel 1 goto exit
 copy /y systemBodies.json ..\..\..\..\Colonisation.Points >nul
