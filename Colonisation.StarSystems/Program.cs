@@ -19,12 +19,12 @@ logger.LogInformation("Initialised");
 HashSet<StarSystem> populatedSystems = [];
 HashSet<Station> colonizingStations = [];
 Task.WaitAll(
-    [
-        // Get a list of populated systems to exclude from colonisation targets
-        Task.Run(() => populatedSystems = GetFromJson<StarSystem>(jsonSerializer, "systemsPopulated.json").ToHashSet()),
-        // Exclude systems with a "System Colonisation Ship" from colonisation targets 
-        Task.Run(() => colonizingStations = GetFromJson<Station>(jsonSerializer, "stations.json",
-            station => station.systemName != null && station.name == "System Colonisation Ship").ToHashSet()),
+[
+    // Get a list of populated systems to exclude from colonisation targets
+    Task.Run(() => populatedSystems = [.. Json.Load<StarSystem>(jsonSerializer, "systemsPopulated.json")]),
+    // Exclude systems with a "System Colonisation Ship" from colonisation targets 
+    Task.Run(() => colonizingStations = [.. Json.Load<Station>(jsonSerializer, "stations.json",
+        station => station.systemName != null && station.name == "System Colonisation Ship")]),
 ]);
 logger.LogInformation("Parsed input files");
 
@@ -37,7 +37,7 @@ double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
 logger.LogInformation("Constructed minor faction space, colonizing space and populated space");
 
 HashSet<ColonisationTarget> output =
-    GetFromJson< StarSystem>(jsonSerializer, "systemsWithCoordinates.json")
+    Json.Load<StarSystem>(jsonSerializer, "systemsWithCoordinates.json")
         .AsParallel()
         .Where(currentSystem => !populatedSpace.Contains(currentSystem))
         .Where(currentSystem => !colonizingSpace.Contains(currentSystem))
@@ -59,26 +59,3 @@ using StreamWriter outputFile = new(configuration["outputFileName"] ?? "");
 using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
 csvWriter.Context.RegisterClassMap<ColonisationTargetClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
-
-static IEnumerable<T> GetFromJson<T>(JsonSerializer jsonSerializer, string filename, 
-        Predicate<T>? filter = default)
-    where T: class
-{
-    using TextReader textReader = new StreamReader(filename);
-    using JsonTextReader jsonReader = new(textReader);
-
-    // This pattern, while more code than Deserialise<T[]>(), minimizes memory use on
-    // multi GB input files.
-    while (jsonReader.Read())
-    {
-        if (jsonReader.TokenType == JsonToken.StartObject)
-        {
-            T? current = jsonSerializer.Deserialize<T>(jsonReader);
-            if (current != null
-                && ((filter != default && filter(current)) || filter == default))
-            {
-                yield return current;
-            }
-        }
-    }
-}

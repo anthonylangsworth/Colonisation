@@ -1,6 +1,4 @@
-﻿using CsvHelper.Configuration;
-
-namespace Colonisation.Common;
+﻿namespace Colonisation.Common;
 
 public record Coords
 {
