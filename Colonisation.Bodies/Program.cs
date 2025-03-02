@@ -15,13 +15,21 @@ ILogger logger = loggerFactory.CreateLogger("Default");
 using HttpClient httpClient = new();
 JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(new JsonSerializerSettings { Formatting = Formatting.Indented });
 
+Dictionary<string, SystemBodies> output = Json.Load<SystemBodies>(jsonSerializer, configuration["bodiesDataFileName"] ?? "")
+                                              .ToDictionary(sb => sb.name, sb => sb);
+
 using StreamReader inputFile = new(configuration["colonisationTargetsFileName"] ?? "");
 using CsvReader csvReader = new(inputFile, CultureInfo.InvariantCulture);
 csvReader.Context.RegisterClassMap<ColonisationTargetClassMap>();
-List<SystemBodies> output = [];
 foreach(ColonisationTarget starSystem in csvReader.EnumerateRecords(new ColonisationTarget()))
 {
     bool retry = true;
+    if (output.ContainsKey(starSystem.name))
+    {
+        retry = false;
+        logger.LogInformation("{starSystemName} is already loaded", starSystem.name);
+    }
+
     while (retry)
     {
         retry = false;
@@ -34,12 +42,12 @@ foreach(ColonisationTarget starSystem in csvReader.EnumerateRecords(new Colonisa
             SystemBodies? systemBodiesInfo = jsonSerializer.Deserialize<SystemBodies>(jsonReader);
             if (systemBodiesInfo != null)
             {
-                output.Add(systemBodiesInfo);
+                output.Add(systemBodiesInfo.name, systemBodiesInfo);
                 logger.LogInformation("Loaded body data for {starSystemName}", starSystem.name);
             }
             else
             {
-                logger.LogInformation("No body data for {starSystemName}", starSystem.name);
+                logger.LogWarning("No body data for {starSystemName}", starSystem.name);
             }
         }
         catch (HttpRequestException ex)
@@ -61,4 +69,4 @@ foreach(ColonisationTarget starSystem in csvReader.EnumerateRecords(new Colonisa
 
 using StreamWriter streamWriter = new(configuration["bodiesDataFileName"] ?? "");
 using JsonWriter jsonWriter = new JsonTextWriter(streamWriter);
-jsonSerializer.Serialize(jsonWriter, output);
+jsonSerializer.Serialize(jsonWriter, output.Values);
