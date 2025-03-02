@@ -34,7 +34,7 @@ MinorFactionSpace minorFactionSpace = new(
 StarSystemCollection populatedSpace = new(populatedSystems);
 StarSystemCollection colonizingSpace = new(colonizingStations);
 double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
-logger.LogInformation("Constructed minor faction space and populated space");
+logger.LogInformation("Constructed minor faction space, colonizing space and populated space");
 
 HashSet<ColonisationTarget> output =
     GetFromJson< StarSystem>(jsonSerializer, "systemsWithCoordinates.json")
