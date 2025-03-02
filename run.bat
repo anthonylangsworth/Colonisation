@@ -13,6 +13,8 @@ cd bin\debug\net8.0
 echo Running "Colonisation.StarSystems" (may take several minutes)...
 Colonisation.StarSystems
 if errorlevel 1 goto exit
+copy /y colonisationTargets.csv ..\..\..\ >nul
+if errorlevel 1 goto exit
 copy /y colonisationTargets.csv ..\..\..\..\Colonisation.Bodies >nul
 if errorlevel 1 goto exit
 copy /y colonisationTargets.csv ..\..\..\..\Colonisation.Bodies\bin\debug\net8.0 >nul
@@ -25,6 +27,8 @@ if errorlevel 1 goto exit
 cd ..\..\..\..\Colonisation.Bodies\bin\debug\net8.0
 echo Running "Colonisation.Bodies" (may take several minutes depending on EDSM's load)...
 Colonisation.Bodies
+if errorlevel 1 goto exit
+copy /y systemBodies.json ..\..\..\ >nul
 if errorlevel 1 goto exit
 copy /y systemBodies.json ..\..\..\..\Colonisation.Points >nul
 if errorlevel 1 goto exit

@@ -15,8 +15,16 @@ ILogger logger = loggerFactory.CreateLogger("Default");
 using HttpClient httpClient = new();
 JsonSerializer jsonSerializer = JsonSerializer.CreateDefault(new JsonSerializerSettings { Formatting = Formatting.Indented });
 
-Dictionary<string, SystemBodies> output = Json.Load<SystemBodies>(jsonSerializer, configuration["bodiesDataFileName"] ?? "")
-                                              .ToDictionary(sb => sb.name, sb => sb);
+Dictionary<string, SystemBodies> output;
+try
+{
+    output = Json.Load<SystemBodies>(jsonSerializer, configuration["bodiesDataFileName"] ?? "")
+                 .ToDictionary(sb => sb.name, sb => sb);
+}
+catch(FileNotFoundException)
+{
+    output = [];
+}
 
 using StreamReader inputFile = new(configuration["colonisationTargetsFileName"] ?? "");
 using CsvReader csvReader = new(inputFile, CultureInfo.InvariantCulture);
