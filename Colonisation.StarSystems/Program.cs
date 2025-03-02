@@ -4,7 +4,6 @@ using CsvHelper;
 using Microsoft.Extensions.Configuration;
 using Colonisation.Common;
 using Microsoft.Extensions.Logging;
-using static System.Collections.Specialized.BitVector32;
 
 // See README.md for details. Error handling is intentionally minimal to improve clarity and speed development.
 
