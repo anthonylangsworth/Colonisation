@@ -55,7 +55,8 @@ HashSet<ColonisationTarget> output =
         .ToHashSet();
 logger.LogInformation("Found colonisable systems");
 
-using StreamWriter outputFile = new(configuration["outputFileName"] ?? "");
+using StreamWriter outputFile = new(configuration["outputFileName"]     
+    ?? throw new ArgumentException("Missing outputFileName in configuration"));
 using CsvWriter csvWriter = new(outputFile, CultureInfo.InvariantCulture, true);
 csvWriter.Context.RegisterClassMap<ColonisationTargetClassMap>();
 csvWriter.WriteRecords(output.OrderBy(o => o.name));
