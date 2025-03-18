@@ -1,5 +1,6 @@
 ﻿using Colonisation.Common;
 
+// No sure whether we need this class. I was going to do more with it but the code went in a different direction.
 class StarSystemCollection
 {
     readonly HashSet<string> _systemNames = [];
