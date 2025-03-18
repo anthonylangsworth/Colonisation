@@ -24,7 +24,7 @@ Task.WaitAll(
     Task.Run(() => populatedSystems = [.. Json.Load<StarSystem>(jsonSerializer, "systemsPopulated.json")]),
     // Exclude systems with a "System Colonisation Ship" from colonisation targets 
     Task.Run(() => colonizingStations = [.. Json.Load<Station>(jsonSerializer, "stations.json",
-        station => station.systemName != null && station.name == "System Colonisation Ship")]),
+        station => station.systemName != null && station.name.Trim().Equals("System Colonisation Ship", StringComparison.OrdinalIgnoreCase))]),
 ]);
 logger.LogInformation("Parsed input files");
 
