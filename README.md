@@ -47,7 +47,7 @@ flowchart TB
 
 The output is a spreadsheet containing a sorted list of colonisable star systems. They are ordered by an arbitrary point score that attempts to measure how valuable they are for colonisation. Specifically:
 1. One point for each body in the system, including stars. This is halved if they are over 50,000 Ls away from entry.
-2. Each landable planet gets twice is gravity in points, measured in "g"s. This is doubled again if it has an atmosphere.
+2. Each landable planet gets twice its gravity, measured in "g"s, in points. This is doubled again if it has an atmosphere. This approximates the number of surface outposts that can be built.
 3. One point for each ring and belt.
 4. Twenty points for a terraformable world, mainly because it may give a terraforming state, allowing wing mining missions.
 
