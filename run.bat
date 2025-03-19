@@ -10,9 +10,12 @@ copy /y stations.json bin\debug\net8.0 >nul
 if errorlevel 1 goto exit
 
 cd bin\debug\net8.0
+
+if "%~1"=="-skip" goto skip
 echo Running "Colonisation.StarSystems" (may take several minutes)...
 Colonisation.StarSystems
 if errorlevel 1 goto exit
+:skip
 copy /y colonisationTargets.csv ..\..\..\ >nul
 if errorlevel 1 goto exit
 copy /y colonisationTargets.csv ..\..\..\..\Colonisation.Bodies >nul
