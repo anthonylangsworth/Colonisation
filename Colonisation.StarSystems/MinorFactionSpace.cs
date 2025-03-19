@@ -1,22 +1,34 @@
 ﻿using Colonisation.Common;
-using System.Linq;
 
 class MinorFactionSpace
 {
     private readonly ISet<StarSystem> _starSystems;
-    private readonly string _minorFactionName;
     private static readonly string[] colonisationContactStationTypes = ["Outpost", "Coriolis Starport", "Ocellus Starport", "Asteroid base", "Orbis Starport"];
 
-    public MinorFactionSpace(string minorFactionName, ICollection<StarSystem> populatedSystems)
+    public MinorFactionSpace(string minorFactionName, string minorFactionNativeStarSystemName, ICollection<StarSystem> populatedSystems)
     {
-        _minorFactionName = minorFactionName.Trim();
+        Name = minorFactionName.Trim();
         _starSystems = populatedSystems
-                        .Where(ssi => ssi.stations.Any(s => IsControlledStation(s, _minorFactionName)))
+                        .Where(ssi => ssi.stations.Any(s => IsControlledStation(s, Name)))
                         .ToHashSet();
-        if(!_starSystems.Any())
+        if (!_starSystems.Any())
         {
             throw new ArgumentException("Not present in any star system", nameof(minorFactionName));
         }
+
+        string trimmedMinorFactionNativeStarSystemName = minorFactionNativeStarSystemName.Trim();
+        NativeStarSystem = _starSystems.First(
+            ss => string.Equals(ss.name, trimmedMinorFactionNativeStarSystemName, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public string Name
+    {
+        get;
+    }
+
+    public StarSystem NativeStarSystem
+    {
+        get;
     }
 
     public (StarSystem, double) Closest(StarSystem system)
@@ -25,6 +37,11 @@ class MinorFactionSpace
                 .Select(edass => (edass, Distance: Distance(system.coords, edass.coords)))
                 .OrderBy(d => d.Distance)
                 .FirstOrDefault();
+    }
+
+    public double DistanceFromNativeStarSystem(StarSystem system)
+    {
+        return Distance(system.coords, NativeStarSystem.coords);
     }
 
     public static double Distance(Coords a, Coords b)

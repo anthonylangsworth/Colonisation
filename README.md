@@ -34,6 +34,7 @@ flowchart TB
 1. Download and extract `systemsPopulated.json` from https://www.edsm.net/dump/systemsPopulated.json.gz into `Colonisation.StarSystems`. This file is also excluded from the git repository. It changes daily and should be redownloaded regularly.
 1. Download and extract `stations.json` from https://www.edsm.net/dump/stations.json.gz into `Colonisation.StarSystems`. This file is also excluded from the git repository. This file's contents are used to detect systems being colonised by looking for a station called "System Colonisation Ship". It changes daily and should be redownloaded regularly.
 1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**.
+1. (Optional) Change the `minorFactionNativeStarSystemName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction's native system. It must match **exactly**.
 1. Build the solution.
 1. Run "run.bat" in the root folder of the solution. This batch file will:
     1. Run `Colonisation.StarSystems`. It takes several minutes to run. By default, output is written to `colonisationTargets.csv`.

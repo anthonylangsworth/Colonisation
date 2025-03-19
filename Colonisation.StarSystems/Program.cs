@@ -30,6 +30,7 @@ logger.LogInformation("Parsed input files");
 
 MinorFactionSpace minorFactionSpace = new(
     configuration["minorFactionName"] ?? throw new ArgumentException("Missing minorFactionName in configuration"),
+    configuration["minorFactionNativeStarSystemName"] ?? throw new ArgumentException("Missing minorFactionNativeStarSystemName in configuration"),
     populatedSystems);
 StarSystemCollection populatedSpace = new(populatedSystems);
 StarSystemCollection colonizingSpace = new(colonizingStations);
@@ -48,7 +49,8 @@ HashSet<ColonisationTarget> output =
             {
                 name = currentSystem.name,
                 nearestMinorFactionSystemName = closestMinorFactionSystem.name,
-                distance = distance
+                distance = distance,
+                distanceFromNativeStarSystem = minorFactionSpace.DistanceFromNativeStarSystem(currentSystem)
             };
         })
         .Where(sso => sso.distance <= colonisationRange)

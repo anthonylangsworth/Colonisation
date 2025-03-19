@@ -56,7 +56,8 @@ foreach(ColonisationTarget colonisationTarget in colonisationTargets)
         points = Math.Round(evaluatedRules.Sum(r => r.points), 1),
         description = string.Join("; ", evaluatedRules.Select(r => r.description)),
         nearestMinorFactionSystemName = colonisationTarget.nearestMinorFactionSystemName,
-        distance = Math.Round(colonisationTarget.distance, 1)
+        distance = Math.Round(colonisationTarget.distance, 1),
+        distanceFromNativeStarSystem = Math.Round(colonisationTarget.distanceFromNativeStarSystem, 1)
     });
 }
 logger.LogInformation("Run rules");

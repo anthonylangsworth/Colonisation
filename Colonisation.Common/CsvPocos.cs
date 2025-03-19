@@ -7,6 +7,7 @@ public record ColonisationTarget
     public string name = "";
     public string nearestMinorFactionSystemName = "";
     public double distance = 0.0;
+    public double distanceFromNativeStarSystem = 0.0;
 }
 
 public class ColonisationTargetClassMap : ClassMap<ColonisationTarget>
@@ -14,8 +15,9 @@ public class ColonisationTargetClassMap : ClassMap<ColonisationTarget>
     public ColonisationTargetClassMap()
     {
         Map(ct => ct.name).Name("Name").Index(0);
-        Map(ct => ct.nearestMinorFactionSystemName).Name("Nearest EDA System").Index(1);
-        Map(ct => ct.distance).Name("Distance").Index(2);
+        Map(ct => ct.nearestMinorFactionSystemName).Name("Colonise From").Index(1);
+        Map(ct => ct.distance).Name("Distance From Colonising System").Index(2);
+        Map(ct => ct.distanceFromNativeStarSystem).Name("Distance From Native Star System").Index(3);
     }
 }
 
@@ -33,6 +35,7 @@ public class PrioritisedColonisationTargetClassMap : ClassMap<PrioritisedColonis
         Map(ct => ct.points).Name("Points").Index(1);
         Map(ct => ct.description).Name("Reason").Index(2);
         Map(ct => ct.nearestMinorFactionSystemName).Name("Colonise From").Index(3);
-        Map(ct => ct.distance).Name("Distance").Index(4);
+        Map(ct => ct.distance).Name("Distance From Colonising System").Index(4);
+        Map(ct => ct.distanceFromNativeStarSystem).Name("Distance From Native Star System").Index(5);
     }
 }
