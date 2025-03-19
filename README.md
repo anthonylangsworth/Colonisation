@@ -4,7 +4,7 @@ Produce a list of potential colonisation systems for your minor faction in the g
 
 This consists of three command line programs (to be run in order):
 1. `Colonisation.StarSystems`: This produces a list of potential colonisation systems near systems controlled by the specified minor faction. The output is CSV for easy import into Excel or a similar spreadsheet.
-1. `Colonisation.Bodies`: This takes the output of `Colonisation.StarSystems` and looks up details about the bodies on EDSM. The output is in JSON, since it has a complex structure. It updates the existing output file, if any to prevent unecessary lookups, which speeds up the process.
+1. `Colonisation.Bodies`: This takes the output of `Colonisation.StarSystems` and looks up details about the bodies on EDSM. The output is in JSON, since it has a complex structure. It updates the existing output file, if any, to prevent unnecessary lookups, which speeds up the process.
 1. `Colonisation.Points`: This takes the output of both previous commands and produces a list of systems based on an arbitrary point system to determine the most desirable systems for colonisation. The output is in a CSV.
 
 The separation ensures long running but infrequently changing details do not impact the likely frequent fiddling and tweaking of point values.
@@ -42,6 +42,14 @@ flowchart TB
     1. Run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, mainly if https://edsm.net is busy.
     1. Copy `systemBodies.json` from the previous step into `Colonisation.Points`.
     1. Run `Colonisation.Points` to output `prioritisedColonisationTargets.csv`.
+
+# Rules
+
+The output is a spreadsheet containing a sorted list of colonisable star systems. They are ordered by an arbitrary point score that attempts to measure how valuable they are for colonisation. Specifically:
+1. One point for each body in the system, including stars. This is halved if they are over 50,000 Ls away from entry.
+2. Each landable planet gets twice is gravity in points, measured in "g"s. This is doubled again if it has an atmosphere.
+3. One point for each ring and belt.
+4. Twenty points for a terraformable world, mainly because it may give a terraforming state, allowing wing mining missions.
 
 # Principles
 
