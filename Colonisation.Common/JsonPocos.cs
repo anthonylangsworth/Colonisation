@@ -45,6 +45,13 @@ public record Body
     public ICollection<Ring> rings = [];
 }
 
+public record Belt
+{
+    public int id = 0;
+    public string name = "";
+    public string type = "";
+}
+
 public record Station
 {
     public int id = 0;
@@ -59,4 +66,5 @@ public record SystemBodies
     public int id = 0;
     public string name = "";
     public ICollection<Body> bodies = [];
+    public ICollection<Belt> belts= [];
 }

@@ -21,7 +21,7 @@ public class ColonisationTargetClassMap : ClassMap<ColonisationTarget>
 
 public record PrioritisedColonisationTarget: ColonisationTarget
 {
-    public int points = 0;
+    public double points = 0.0;
     public string description = "";
 }
 
@@ -32,7 +32,7 @@ public class PrioritisedColonisationTargetClassMap : ClassMap<PrioritisedColonis
         Map(ct => ct.name).Name("Name").Index(0);
         Map(ct => ct.points).Name("Points").Index(1);
         Map(ct => ct.description).Name("Reason").Index(2);
-        Map(ct => ct.nearestMinorFactionSystemName).Name("Nearest EDA System").Index(3);
+        Map(ct => ct.nearestMinorFactionSystemName).Name("Colonise From").Index(3);
         Map(ct => ct.distance).Name("Distance").Index(4);
     }
 }

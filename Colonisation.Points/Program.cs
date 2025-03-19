@@ -33,16 +33,18 @@ logger.LogInformation("Loaded system body information");
 List<PrioritisedColonisationTarget> prioritisedColonisationTargets = [];
 List<Rule> rules =
 [
-    new LandableWorlds(),
-    new MultipleStars(),
+    new Bodies(),
+    new LandableBodies(),
+    // new MultipleStars(),
     new Rings(),
-    new TerraformableWorlds()
+    new Belts(),
+    // new TerraformableWorlds()
 ];
 foreach(ColonisationTarget colonisationTarget in colonisationTargets)
 {
     SystemBodies colonizationTargetBodies = systemBodies[colonisationTarget.name];
 
-    IOrderedEnumerable<(int points, string description)> evaluatedRules = 
+    IOrderedEnumerable<(double points, string description)> evaluatedRules = 
         rules
             .Select(r => r.Evaluate(colonisationTarget, colonizationTargetBodies))
             .Where(r => r.points > 0)
@@ -51,10 +53,10 @@ foreach(ColonisationTarget colonisationTarget in colonisationTargets)
     prioritisedColonisationTargets.Add(new PrioritisedColonisationTarget()
     {
         name = colonisationTarget.name,
-        points = evaluatedRules.Sum(r => r.points),
+        points = Math.Round(evaluatedRules.Sum(r => r.points), 1),
         description = string.Join("; ", evaluatedRules.Select(r => r.description)),
         nearestMinorFactionSystemName = colonisationTarget.nearestMinorFactionSystemName,
-        distance = Math.Round(colonisationTarget.distance, 3)
+        distance = Math.Round(colonisationTarget.distance, 1)
     });
 }
 logger.LogInformation("Run rules");
