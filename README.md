@@ -23,7 +23,7 @@ flowchart TB
   edsm -->|Daily Export| sp
   edsm -->|Daily Export| st
   cs --> ct@{ shape: doc, label: "colonisationTargets.csv"}
-  cb <--> sb@{ shape: doc, label: "systemBodies.json"}
+  cb <-->|Reads and Writes| sb@{ shape: doc, label: "systemBodies.json"}
   ct --> cb
   ct --> cp["Colonisation.Points"]
   sb --> cp
