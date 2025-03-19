@@ -18,10 +18,10 @@ flowchart TB
   swc@{ shape: doc, label: "systemsWithCoordinates.json"} --> cs["Colonisation.StarSystems"]
   sp@{ shape: doc, label: "systemsPopulated.json"} --> cs
   st@{ shape: doc, label: "stations.json"} --> cs
-  edsm@{ shape: cyl, label: "EDSM"} --> cb["Colonisation.Bodies"]
-  edsm --> swc
-  edsm --> sp
-  edsm --> st
+  edsm@{ shape: cyl, label: "Elite Dangerous Star Map (EDSM)"} -->|API| cb["Colonisation.Bodies"] 
+  edsm -->|Daily Export| swc
+  edsm -->|Daily Export| sp
+  edsm -->|Daily Export| st
   cs --> ct@{ shape: doc, label: "colonisationTargets.csv"}
   cb <--> sb@{ shape: doc, label: "systemBodies.json"}
   ct --> cb
