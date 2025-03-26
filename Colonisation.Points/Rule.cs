@@ -86,7 +86,7 @@ class Belts : Rule
     public override (double points, string description) Evaluate(ColonisationTarget starSystem, SystemBodies bodies)
     {
         return bodies.belts.Count != 0
-            ? (bodies.belts.Count(), $"{bodies.belts.Count} asteroid belts")
+            ? (bodies.belts.Count, $"{bodies.belts.Count} asteroid belts")
             : (0, "");
     }
 }
