@@ -75,7 +75,7 @@ class Rings : Rule
     {
         IEnumerable<Ring> rings = bodies.bodies.SelectMany(body => body.rings);
         return rings.Any()
-            ? (rings.Count(), $"Contains {rings.Count()} rings")
+            ? (rings.Count(), $"{rings.Count()} rings")
             : (0, "");
     }
 }
