@@ -5,7 +5,8 @@ class MinorFactionSpace
     private readonly ISet<StarSystem> _starSystems;
     private static readonly string[] colonisationContactStationTypes = ["Outpost", "Coriolis Starport", "Ocellus Starport", "Asteroid base", "Orbis Starport"];
 
-    public MinorFactionSpace(string minorFactionName, string minorFactionNativeStarSystemName, ICollection<StarSystem> populatedSystems)
+    public MinorFactionSpace(string minorFactionName, string minorFactionNativeStarSystemName, 
+        ICollection<StarSystem> populatedSystems)
     {
         Name = minorFactionName.Trim();
         _starSystems = populatedSystems
@@ -13,12 +14,23 @@ class MinorFactionSpace
                         .ToHashSet();
         if (!_starSystems.Any())
         {
-            throw new ArgumentException("Not present in any star system", nameof(minorFactionName));
+            throw new ArgumentException(
+                $"The minor faction '{minorFactionName}' is not present in any star system", 
+                nameof(minorFactionName));
         }
 
-        string trimmedMinorFactionNativeStarSystemName = minorFactionNativeStarSystemName.Trim();
-        NativeStarSystem = _starSystems.First(
-            ss => string.Equals(ss.name, trimmedMinorFactionNativeStarSystemName, StringComparison.OrdinalIgnoreCase));
+        try
+        {
+            string trimmedMinorFactionNativeStarSystemName = minorFactionNativeStarSystemName.Trim();
+            NativeStarSystem = _starSystems.First(
+                ss => string.Equals(ss.name, trimmedMinorFactionNativeStarSystemName, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (InvalidOperationException)
+        {
+            throw new ArgumentException(
+                $"The native star system '{minorFactionNativeStarSystemName}' is not a populated star system",
+                nameof(minorFactionNativeStarSystemName));
+        }
     }
 
     public string Name
