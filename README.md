@@ -31,17 +31,42 @@ flowchart TB
 ```
 
 1. Download and extract `systemsWithCoordinates.json` from https://www.edsm.net/dump/systemsWithCoordinates.json.gz into `Colonisation.StarSystems`. Note that this is a large file (12+ GB) at the time of writing. Such a large but rarely changing file is intentionally excluded from the git repository. The systems, particularly those within or near the bubble, are well known so this file should only need to be downloaded the first time.
-1. Download and extract `systemsPopulated.json` from https://www.edsm.net/dump/systemsPopulated.json.gz into `Colonisation.StarSystems`. This file is also excluded from the git repository. It changes daily and should be redownloaded regularly.
-1. Download and extract `stations.json` from https://www.edsm.net/dump/stations.json.gz into `Colonisation.StarSystems`. This file is also excluded from the git repository. This file's contents are used to detect systems being colonised by looking for a station called "System Colonisation Ship". It changes daily and should be redownloaded regularly.
-1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**.
-1. (Optional) Change the `minorFactionNativeStarSystemName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction's native system. It must match **exactly**.
+1. Download and extract `systemsPopulated.json` from https://www.edsm.net/dump/systemsPopulated.json.gz into `Colonisation.StarSystems`. This file is excluded from the git repository. It changes daily and should be redownloaded regularly.
+1. Download and extract `stations.json` from https://www.edsm.net/dump/stations.json.gz into `Colonisation.StarSystems`. This file is also large (7+ GB) at the time of writing and is also excluded from the git repository. This file's contents are used to detect systems being colonised by looking for a station called "System Colonisation Ship". It changes daily and should be redownloaded regularly.
+1. (Optional) Change the `minorFactionName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction. It must match **exactly**. See Configuration below for an explanation.
+1. (Optional) Change the `minorFactionNativeStarSystemName` setting in `Colonisation.StarSystems\applicationSettings.config` to the name of your minor faction's native system. It must match **exactly**. See Configuration below for an explanation.
 1. Build the solution.
 1. Run "run.bat" in the root folder of the solution. This batch file will:
     1. Run `Colonisation.StarSystems`. It takes several minutes to run. By default, output is written to `colonisationTargets.csv`.
     1. Copy `colonisationTargets.csv` from the previous step into `Colonisation.Bodies` and `Colonisation.Points`. You can also load this file into any spreadsheet.
-    1. Run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, mainly if https://edsm.net is busy.
+    1. Run `Colonisation.Bodies` to download relevant information about the bodies in these systems. This may take a while, especially if https://edsm.net is busy.
     1. Copy `systemBodies.json` from the previous step into `Colonisation.Points`.
     1. Run `Colonisation.Points` to output `prioritisedColonisationTargets.csv`.
+  
+`prioritisedColonisationTargets.csv` contains the following columns:
+
+|Value|Description|
+|---|---|
+|Name|The potential colonisation target star system's name. Note that the system may have been claimed subsequently after the data was last updated.|
+|Points|The number of points the system earned. See the Rules below.|
+|Reason|A brief description of each rule that matched. Helpful if you are looking for something specific.|
+|Colonise From|The name of the closest star system where your selected minor faction controls one or more outposts, installations or starports.|
+|Distance from Colonising Star System|The distance, in light years, from the `Colonise From` system.|
+|Distance from Native Star System|The distance, in light years, from the minor faction's native star system. See `minorFactionNativeStarSystemName` in Configuration. If you are only interested in systems close to your native star system, most spreadsheets can filter out star systems that are too far away.|
+
+This file is sorted by Points (highest points first) and then by Name (alphabetically). This ensures the most promising star systems are at the top.
+
+# Configuration
+
+Important configuration parameters in `Colonisation.StarSystems\applicationSettings.config` are:
+
+|Value|Description|
+|---|---|
+|minorFactionName|These tools look for potential colonisation targets for this minor faction. It is required and must match the in-game name exactly.|
+|minorFactionNativeStarSystemName|The native star system for the minor faction in `minorFactionName`. It is only used to calculate the `Distance from Native System` value in `colonisationTargets.csv` output from `Colonisation.StarSystems` and `prioritisedColonisationTargets.csv` output from `Colonisation.Points`. It is required and must match the in-game name exactly.|
+|colonisationRange|The distance, in light years, from which a system can be colonised. It defaults to 16, the in-game value at the time of writing and so need not be changed unless the in-game range changes. It is required and must be positive.|
+
+Other configuration values specify file names, which need not be changed.
 
 # Rules
 
