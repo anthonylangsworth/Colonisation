@@ -34,7 +34,14 @@ MinorFactionSpace minorFactionSpace = new(
     populatedSystems);
 StarSystemCollection populatedSpace = new(populatedSystems);
 StarSystemCollection colonizingSpace = new(colonizingStations);
-double colonisationRange = Convert.ToDouble(configuration["colonisationRange"]);
+double colonisationRange;
+if(!double.TryParse(
+        configuration["colonisationRange"] ?? throw new ArgumentException("Missing colonisationRange in configuration"),
+        out colonisationRange)
+    || colonisationRange <= 0.0)
+{
+    throw new ArgumentException("colonisationRange must be a positive number");
+}
 logger.LogInformation("Constructed minor faction space, colonizing space and populated space");
 
 HashSet<ColonisationTarget> output =
